@@ -1,0 +1,46 @@
+name: Derin 2.0 APK
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
+
+      - name: ZIP'i bul ve aç
+        run: |
+          ZIP=$(find . -maxdepth 2 -type f -iname "*.zip" | head -1)
+          mkdir -p project
+          unzip -q "$ZIP" -d project
+
+      - name: Android projesini bul
+        run: |
+          SETTINGS=$(find project \( -name settings.gradle -o -name settings.gradle.kts \) | head -1)
+          PROJECT_DIR=$(dirname "$SETTINGS")
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+
+      - name: APK oluştur
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: gradle assembleDebug --stacktrace
+
+      - name: APK'yı hazırla
+        uses: actions/upload-artifact@v4
+        with:
+          name: Derin-2.0-APK
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
