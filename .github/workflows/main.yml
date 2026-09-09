@@ -34,7 +34,10 @@ jobs:
           SETTINGS=$(find project \( -name settings.gradle -o -name settings.gradle.kts \) | head -1)
           PROJECT_DIR=$(dirname "$SETTINGS")
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-
+        - name: XML hatasını düzelt
+          run: |
+            XML=$(find project -path "*/app/src/main/res/layout/activity_main.xml" | head -1)
+            sed -i 's/android:hintTextColor="[^"]*"//g' "$XML"
       - name: APK oluştur
         working-directory: ${{ env.PROJECT_DIR }}
         run: gradle assembleDebug --stacktrace
