@@ -23,9 +23,9 @@ jobs:
         with:
           gradle-version: '8.10'
 
-      - name: ZIP'i bul ve aç
+      - name: Derin Audi RS7 ZIP'i aç
         run: |
-          ZIP=$(find . -maxdepth 2 -type f -iname "*.zip" | head -1)
+          ZIP="./Derin_Audi_RS7_v0.6_SesliUyandirma.zip"
           mkdir -p project
           unzip -q "$ZIP" -d project
 
@@ -47,5 +47,5 @@ jobs:
       - name: APK'yı hazırla
         uses: actions/upload-artifact@v4
         with:
-          name: Derin-2.0-APK
+          name: Derin-Audi-RS7-APK
           path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
